@@ -10,18 +10,29 @@ int main()
     int fails = 0;
     int total = 0;
     int res;
+    int n;
 
     sys_start();
 
     dht_init(&dht, &pin_d1_dev);
     while (1) {
-        res = dht_11_read(&dht, &temperature, &humidity);
+	n = 0;
+        while (1) {
+            res = dht_11_read(&dht, &temperature, &humidity);
+            if (n > 15 || res == 0) {
+                break;
+	    }
+	    n++;
+            std_printf(".");
+            thrd_sleep_ms(200);
+	}
+	total++;
         if (res < 0) {
             std_printf("err: %d\n", res);
 	    fails++;
+	} else {
+            std_printf("t:%f, h:%f (%d/%d) n:%d\n", temperature, humidity, fails, total, n);
 	}
-	total++;
-        std_printf("t:%f, h:%f (%d/%d)\n", temperature, humidity, fails, total);
 	thrd_sleep(10);
     }
 
