@@ -14,11 +14,13 @@ int main()
 
     sys_start();
 
+    dht_module_init();
     dht_init(&dht, &pin_d1_dev);
+
     while (1) {
 	n = 0;
         while (1) {
-            res = dht_11_read(&dht, &temperature, &humidity);
+            res = dht_read_11(&dht, &temperature, &humidity);
             if (n > 15 || res == 0) {
                 break;
 	    }
